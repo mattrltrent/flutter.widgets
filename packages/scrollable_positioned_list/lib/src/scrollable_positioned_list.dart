@@ -178,14 +178,13 @@ class ScrollablePositionedList extends StatefulWidget {
 /// Controller to jump or scroll to a particular position in a
 /// [ScrollablePositionedList].
 class ItemScrollController {
-  ItemScrollController({ScrollController? scrollController}) {
-    this.scrollController =
-        scrollController ?? ScrollController(keepScrollOffset: false);
+  ItemScrollController({required ScrollController scrollController}) {
+    this.scrollController = scrollController;
   }
 
   /// Exposes [ScrollablePositionedList]'s Primary scroll controller
   ///
-  ScrollController? scrollController;
+  late ScrollController scrollController;
 
   /// Whether any ScrollablePositionedList objects are attached this object.
   ///
