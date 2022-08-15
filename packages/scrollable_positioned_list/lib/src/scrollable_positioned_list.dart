@@ -37,7 +37,7 @@ class ScrollablePositionedList extends StatefulWidget {
     required this.itemCount,
     required this.itemBuilder,
     Key? key,
-    this.itemScrollController,
+    required this.itemScrollController,
     this.shrinkWrap = false,
     ItemPositionsListener? itemPositionsListener,
     this.initialScrollIndex = 0,
@@ -65,7 +65,7 @@ class ScrollablePositionedList extends StatefulWidget {
     required this.separatorBuilder,
     Key? key,
     this.shrinkWrap = false,
-    this.itemScrollController,
+    required this.itemScrollController,
     ItemPositionsListener? itemPositionsListener,
     this.initialScrollIndex = 0,
     this.initialAlignment = 0,
@@ -96,7 +96,7 @@ class ScrollablePositionedList extends StatefulWidget {
   final IndexedWidgetBuilder? separatorBuilder;
 
   /// Controller for jumping or scrolling to an item.
-  final ItemScrollController? itemScrollController;
+  final ItemScrollController itemScrollController;
 
   /// Notifier that reports the items laid out in the list after each frame.
   final ItemPositionsNotifier? itemPositionsNotifier;
@@ -283,9 +283,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
     super.initState();
     ItemPosition? initialPosition = PageStorage.of(context)!.readState(context);
     primary = _ListDisplayDetails(
-        const ValueKey('Ping'),
-        widget.itemScrollController?.scrollController ??
-            ScrollController(keepScrollOffset: false));
+        const ValueKey('Ping'), widget.itemScrollController.scrollController);
     secondary = _ListDisplayDetails(
         const ValueKey('Pong'), ScrollController(keepScrollOffset: false));
     primary.target = initialPosition?.index ?? widget.initialScrollIndex;
@@ -294,14 +292,14 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
     if (widget.itemCount > 0 && primary.target > widget.itemCount - 1) {
       primary.target = widget.itemCount - 1;
     }
-    widget.itemScrollController?._attach(this);
+    widget.itemScrollController._attach(this);
     primary.itemPositionsNotifier.itemPositions.addListener(_updatePositions);
     secondary.itemPositionsNotifier.itemPositions.addListener(_updatePositions);
   }
 
   @override
   void deactivate() {
-    widget.itemScrollController?._detach();
+    widget.itemScrollController._detach();
     super.deactivate();
   }
 
@@ -317,12 +315,12 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
   @override
   void didUpdateWidget(ScrollablePositionedList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.itemScrollController?._scrollableListState == this) {
-      oldWidget.itemScrollController?._detach();
+    if (oldWidget.itemScrollController._scrollableListState == this) {
+      oldWidget.itemScrollController._detach();
     }
-    if (widget.itemScrollController?._scrollableListState != this) {
-      widget.itemScrollController?._detach();
-      widget.itemScrollController?._attach(this);
+    if (widget.itemScrollController._scrollableListState != this) {
+      widget.itemScrollController._detach();
+      widget.itemScrollController._attach(this);
     }
 
     if (widget.itemCount == 0) {
